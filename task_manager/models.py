@@ -46,10 +46,10 @@ class Worker(AbstractUser):
 
 class Task(models.Model):
     PRIORITY_CHOICES = [
-        ("low", "Low"),
-        ("medium", "Medium"),
-        ("high", "High"),
-        ("urgent", "Urgent"),
+        ("Low", "Low"),
+        ("Medium", "Medium"),
+        ("High", "High"),
+        ("Urgent", "Urgent"),
     ]
 
     name = models.CharField(max_length=255)
