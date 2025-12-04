@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include "includes/head.html" %}
+  {% block extrastyle %}{% endblock extrastyle %}
+</head>
+
+<body class="">
+
+  {% block content %}{% endblock content %}
+
+  <footer class="footer py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto text-center mb-4 mt-2">
+          <a href="https://github.com/mtotsevych/TaskOra" target="_blank" class="text-secondary me-xl-4 me-4">
+            <span class="text-lg fab fa-github"></span>
+          </a>
+          <a href="https://www.instagram.com/mikolaj_tocewicz?igsh=ZTl0NjNvczhlZXl0" target="_blank" class="text-secondary me-xl-4 me-4">
+            <span class="text-lg fab fa-instagram"></span>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 mx-auto text-center mt-1">
+          <p class="mb-0 text-secondary">
+            &copy; Coded by <a href="https://www.linkedin.com/in/mikołaj-tocewicz-572ab4351" class="font-weight-bold" target="_blank">Mykola Totsevych</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  {% include "includes/scripts.html" %}
+  {% block extra_js %}{% endblock extra_js %}
+
+</body>
+
+</html>
