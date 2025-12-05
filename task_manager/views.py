@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task_manager.forms import WorkerCreationForm
+from task_manager.forms import WorkerCreationForm, WorkerSearchForm
 from task_manager.models import Worker, Task
 
 
@@ -50,6 +50,40 @@ def index(request: HttpRequest) -> HttpResponse:
     }
     return render(request, "task_manager/index.html", context=context)
 
+
+class WorkerListView(generic.ListView):
+    model = Worker
+    template_name = "task_manager/profile_list.html"
+
+    def get_queryset(self):
+        queryset = Worker.objects.select_related("position")
+        form = WorkerSearchForm(self.request.GET)
+        if form.is_valid():
+            queryset = queryset.filter(username__icontains=form.cleaned_data["username"])
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = WorkerSearchForm(self.request.GET)
+        context["form"] = form
+        return context
+
+
+class WorkerDetailView(generic.DetailView):
+    model = Worker
+    template_name = "task_manager/profile.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.GET.get("completed") == "Yes":
+            context["tasks"] = self.object.tasks.filter(is_completed=True)
+        elif self.request.GET.get("completed") == "No":
+            context["tasks"] = self.object.tasks.filter(is_completed=False)
+        else:
+            context["tasks"] = self.object.tasks.all()
+        return context
+
+
 class WorkerCreateView(generic.CreateView):
     model = Worker
     form_class = WorkerCreationForm
@@ -60,3 +94,22 @@ class WorkerCreateView(generic.CreateView):
         response = super().form_valid(form)
         login(self.request, self.object)
         return response
+
+
+class WorkerUpdateView(generic.UpdateView):
+    model = Worker
+    fields = (
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "bio",
+        "position",
+    )
+    template_name = "task_manager/profile_update.html"
+
+
+class WorkerDeleteView(generic.DeleteView):
+    model = Worker
+    success_url = reverse_lazy("login")
+    template_name = "task_manager/profile_confirm_delete.html"
