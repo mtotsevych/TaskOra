@@ -1,0 +1,83 @@
+{% extends "layouts/base.html" %}
+{% load crispy_forms_filters %}
+{% load static %}
+
+{% block content %}
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="mb-0">Our Workers</h6>
+              <form action="" method="get" class="position-relative" style="width: 250px;">
+                {{ form.username }}
+                <button type="submit" class="btn position-absolute end-0 top-0 bottom-0 px-3 border-0 bg-transparent shadow-none">
+                  <i class="fas fa-search text-secondary"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive px-4" style="max-height: 72vh; overflow-y: auto;">
+              <table class="table align-items-center mb-0">
+                {% if worker_list %}
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Full name</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">E-mail</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Position</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Is Admin</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Joined</th>
+                      <th class="text-secondary opacity-7"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for worker in worker_list %}
+                      <tr>
+                        <td class="align-middle ps-4 py-3">
+                          {% if worker.first_name and  worker.last_name %}
+                            <h6 class="mb-0 text-sm">{{ worker.first_name }} {{ worker.last_name }}</h6>
+                          {% else %}
+                            <h6 class="mb-0 text-sm">Full name not saved yet.</h6>
+                          {% endif %}
+                          <p class="text-xs text-secondary mb-0">@{{ worker.username }}</p>
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          <h6 class="mb-0 text-sm">{{ worker.email }}</h6>
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          <h6 class="mb-0 text-sm">{{ worker.position }}</h6>
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          {% if worker.is_staff %}
+                            <h6 class="mb-0 text-sm">Admin</h6>
+                          {% else %}
+                            <h6 class="mb-0 text-sm">Worker</h6>
+                          {% endif %}
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          <h6 class="mb-0 text-sm">{{ worker.date_joined }}</h6>
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          <a href="{% url "task_manager:profile-detail" worker.id %}" class="btn btn-primary btn-sm">
+                            View profile
+                          </a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                {% else %}
+                  <div class="card-body px-4 py-3">
+                    <h6 class="mb-0">There are no active workers.</h6>
+                  </div>
+                {% endif %}
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include "includes/footer.html" %}
+  </div>
+{% endblock content %}
