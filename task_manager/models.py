@@ -1,3 +1,5 @@
+from django.urls import reverse
+
 from TaskOra import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -34,11 +36,15 @@ class Tag(models.Model):
 
 
 class Worker(AbstractUser):
+    bio = models.TextField(null= True, blank=True)
     position = models.ForeignKey(
         Position,
         on_delete=models.CASCADE,
         related_name="workers"
     )
+
+    def get_absolute_url(self):
+        return reverse("task_manager:profile-detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
