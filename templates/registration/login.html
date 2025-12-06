@@ -16,9 +16,10 @@
                   <p class="mb-0">Enter your username and password to sign in</p>
                 </div>
                 <div class="card-body">
-                  <form role="form" method="post">
+                  <form action="{% url "login" %}" role="form" method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
+                    <input type="hidden" name="next" value="{{ next }}">
                     <div class="d-flex align-items-center justify-content-between">
                     </div>
                     <div class="text-center">
