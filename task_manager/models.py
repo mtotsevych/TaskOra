@@ -1,8 +1,8 @@
+from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import AbstractUser
 
 from TaskOra import settings
-from django.contrib.auth.models import AbstractUser
-from django.db import models
 
 
 class Position(models.Model):

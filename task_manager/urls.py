@@ -3,14 +3,14 @@ from django.urls import path
 from task_manager.views import (
     index,
     WorkerCreateView,
-    WorkerDetailView,
-    WorkerDeleteView,
-    WorkerUpdateView,
     WorkerListView,
+    WorkerDetailView,
+    WorkerUpdateView,
+    WorkerDeleteView,
     TaskListView,
     complete_and_incomplete_task,
-    TaskCreateView,
     TaskDetailView,
+    TaskCreateView,
     TaskUpdateView,
     TaskDeleteView
 )
