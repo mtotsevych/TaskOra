@@ -132,6 +132,8 @@ class TaskListView(generic.ListView):
             queryset = queryset.filter(is_completed=True)
         elif self.request.GET.get("completed") == "No":
             queryset = queryset.filter(is_completed=False)
+        if self.request.GET.get("assigned") == "No":
+            queryset = queryset.filter(assignees__isnull=True).distinct()
         return queryset
 
     def get_context_data(self, **kwargs):
