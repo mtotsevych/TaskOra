@@ -1,5 +1,11 @@
 from django.contrib.auth import login
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import (
+    HttpRequest,
+    HttpResponse,
+    HttpResponseRedirect
+)
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
@@ -7,12 +13,13 @@ from django.views import generic
 from task_manager.forms import (
     WorkerCreationForm,
     WorkerSearchForm,
-    TaskSearchForm,
     TaskCreationChangeForm,
+    TaskSearchForm,
 )
 from task_manager.models import Worker, Task
 
 
+@login_required
 def index(request: HttpRequest) -> HttpResponse:
     num_of_workers = Worker.objects.filter(is_active=True).count()
     num_of_completed_tasks = Task.objects.filter(is_completed=True).count()
@@ -31,7 +38,6 @@ def index(request: HttpRequest) -> HttpResponse:
     percentage_of_urgent_priority_tasks = round(
             Task.objects.filter(priority="Urgent").count() * 100 / num_of_all_tasks, 1
     )
-
     worker_task_list = (
         Task.objects.filter(assignees__id=request.user.id)
         .select_related("task_type")
@@ -41,7 +47,6 @@ def index(request: HttpRequest) -> HttpResponse:
         worker_task_list = worker_task_list.filter(is_completed=True)
     elif request.GET.get("completed") == "No":
         worker_task_list = worker_task_list.filter(is_completed=False)
-
     context = {
         "num_of_workers": num_of_workers,
         "num_of_completed_tasks": num_of_completed_tasks,
@@ -56,7 +61,7 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "task_manager/index.html", context=context)
 
 
-class WorkerListView(generic.ListView):
+class WorkerListView(LoginRequiredMixin, generic.ListView):
     model = Worker
     template_name = "task_manager/profile_list.html"
 
@@ -74,7 +79,7 @@ class WorkerListView(generic.ListView):
         return context
 
 
-class WorkerDetailView(generic.DetailView):
+class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     model = Worker
     template_name = "task_manager/profile.html"
 
@@ -89,7 +94,7 @@ class WorkerDetailView(generic.DetailView):
         return context
 
 
-class WorkerCreateView(generic.CreateView):
+class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     model = Worker
     form_class = WorkerCreationForm
     template_name = "task_manager/register.html"
@@ -101,7 +106,7 @@ class WorkerCreateView(generic.CreateView):
         return response
 
 
-class WorkerUpdateView(generic.UpdateView):
+class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Worker
     fields = (
         "username",
@@ -114,13 +119,13 @@ class WorkerUpdateView(generic.UpdateView):
     template_name = "task_manager/profile_update.html"
 
 
-class WorkerDeleteView(generic.DeleteView):
+class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Worker
     success_url = reverse_lazy("login")
     template_name = "task_manager/profile_confirm_delete.html"
 
 
-class TaskListView(generic.ListView):
+class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
 
     def get_queryset(self):
@@ -143,6 +148,7 @@ class TaskListView(generic.ListView):
         return context
 
 
+@login_required
 def complete_and_incomplete_task(request: HttpRequest, pk: int) -> HttpResponseRedirect:
     task = Task.objects.get(pk=pk)
     if task.is_completed:
@@ -153,21 +159,21 @@ def complete_and_incomplete_task(request: HttpRequest, pk: int) -> HttpResponseR
     return HttpResponseRedirect(reverse_lazy("task_manager:task-list"))
 
 
-class TaskDetailView(generic.DetailView):
+class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     model = Task
 
 
-class TaskCreateView(generic.CreateView):
+class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     model = Task
     form_class = TaskCreationChangeForm
     success_url = reverse_lazy("task_manager:task-list")
 
 
-class TaskUpdateView(generic.UpdateView):
+class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Task
     form_class = TaskCreationChangeForm
 
 
-class TaskDeleteView(generic.DeleteView):
+class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Task
     success_url = reverse_lazy("task_manager:task-list")
