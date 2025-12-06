@@ -16,23 +16,24 @@
             <a href="{% url "task_manager:task-delete" task.pk %}" class="btn btn-sm btn-danger">Delete</a>
           </div>
         </div>
-
         <div class="card-body overflow-auto" style="max-height: 73vh;">
           <div class="mb-3 border-bottom pb-2">
             <label class="text-secondary text-sm">Name</label>
             <h6 class="mb-0 ms-2">{{ task.name }}</h6>
           </div>
-
           <div class="mb-3 border-bottom pb-2">
             <label class="text-secondary text-sm">Description</label>
             <p class="mb-0 text-dark ms-2">{{ task.description }}</p>
           </div>
-
           <div class="mb-4 border-bottom pb-4">
             <div class="row text-center">
               <div class="col-md-4 d-flex flex-column align-items-center">
                 <label class="text-secondary text-sm mb-1">Deadline</label>
-                <div>{{ task.deadline|date:"F j, Y" }}</div>
+                {% if task.deadline %}
+                  <div>{{ task.deadline|date:"F j, Y" }}</div>
+                {% else %}
+                  <div>No deadline</div>
+                {% endif %}
               </div>
               <div class="col-md-4 d-flex flex-column align-items-center">
                 <label class="text-secondary text-sm mb-1">Priority</label>
@@ -54,12 +55,10 @@
               </div>
             </div>
           </div>
-
           <div class="mb-3 border-bottom pb-2">
             <label class="text-secondary text-sm">Type of Task</label>
             <div class="ms-2">{{ task.task_type }}</div>
           </div>
-
           <div class="mb-3 border-bottom pb-2">
             <label class="text-secondary text-sm">Tags</label>
             {% if task.tags.exists %}
@@ -72,7 +71,6 @@
               <p class="text-muted mb-0 ms-2">No tags</p>
             {% endif %}
           </div>
-
           <div>
             <label class="text-secondary text-sm">Assignees</label>
             {% if task.assignees.exists %}
