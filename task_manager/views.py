@@ -1,10 +1,15 @@
 from django.contrib.auth import login
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task_manager.forms import WorkerCreationForm, WorkerSearchForm
+from task_manager.forms import (
+    WorkerCreationForm,
+    WorkerSearchForm,
+    TaskSearchForm,
+    TaskCreationChangeForm,
+)
 from task_manager.models import Worker, Task
 
 
@@ -113,3 +118,54 @@ class WorkerDeleteView(generic.DeleteView):
     model = Worker
     success_url = reverse_lazy("login")
     template_name = "task_manager/profile_confirm_delete.html"
+
+
+class TaskListView(generic.ListView):
+    model = Task
+
+    def get_queryset(self):
+        queryset = Task.objects.select_related("task_type")
+        form = TaskSearchForm(self.request.GET)
+        if form.is_valid():
+            queryset = queryset.filter(name__icontains=form.cleaned_data["name"])
+        if self.request.GET.get("completed") == "Yes":
+            queryset = queryset.filter(is_completed=True)
+        elif self.request.GET.get("completed") == "No":
+            queryset = queryset.filter(is_completed=False)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = TaskSearchForm(self.request.GET)
+        context["form"] = form
+        return context
+
+
+def complete_and_incomplete_task(request: HttpRequest, pk: int) -> HttpResponseRedirect:
+    task = Task.objects.get(pk=pk)
+    if task.is_completed:
+        task.is_completed = False
+    else:
+        task.is_completed = True
+    task.save()
+    return HttpResponseRedirect(reverse_lazy("task_manager:task-list"))
+
+
+class TaskDetailView(generic.DetailView):
+    model = Task
+
+
+class TaskCreateView(generic.CreateView):
+    model = Task
+    form_class = TaskCreationChangeForm
+    success_url = reverse_lazy("task_manager:task-list")
+
+
+class TaskUpdateView(generic.UpdateView):
+    model = Task
+    form_class = TaskCreationChangeForm
+
+
+class TaskDeleteView(generic.DeleteView):
+    model = Task
+    success_url = reverse_lazy("task_manager:task-list")
