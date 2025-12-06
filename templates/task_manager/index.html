@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container-fluid py-4" style="width: 100%; max-width: 100vw; overflow-x: hidden">
   <div class="row">
     <div class="col-lg-6 col-12">
@@ -270,12 +269,9 @@
   </div>
   {% include "includes/footer.html" %}
 </div>
-
 {% endblock content %}
 
-
 {% block extra_js %}
-
 <script src="{% static "assets/js/plugins/chartjs.min.js" %}"></script>
 <script>
 var ctx = document.getElementById("chart-bars").getContext("2d");
@@ -447,5 +443,4 @@ new Chart(ctx2, {
     },
 });
 </script>
-
 {% endblock extra_js %}

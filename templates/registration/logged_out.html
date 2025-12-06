@@ -1,4 +1,4 @@
-{% extends 'layouts/base-auth.html' %}
+{% extends "layouts/base-auth.html" %}
 {% load i18n static %}
 
 {% block content %}
@@ -13,7 +13,7 @@
                         </div>
                         <div class="mt-5">
                             <div class="d-grid mt-3">
-                                <a href="{% url 'login' %}" class="btn btn-gray-800">Log in again</a>
+                                <a href="{% url "login" %}" class="btn btn-gray-800">Log in again</a>
                             </div>
                         </div>
                     </div>

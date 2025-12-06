@@ -1,4 +1,4 @@
-{% extends 'layouts/base-auth.html' %}
+{% extends "layouts/base-auth.html" %}
 {% load i18n static %}
 
 {% block content %}
@@ -33,5 +33,4 @@
     <script type="application/javascript">
         notification.info("<p class='{{ direction.panel }}'>" + "{% trans "Thanks for spending some quality time with the Web site today." %}" + "</p>", 'top', '{{ direction.notify }}');
     </script>
-
 {% endblock %}

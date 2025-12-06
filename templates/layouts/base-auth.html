@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,9 +9,7 @@
 </head>
 
 <body class="">
-
   {% block content %}{% endblock content %}
-
   <footer class="footer py-5">
     <div class="container">
       <div class="row">
@@ -32,10 +31,8 @@
       </div>
     </div>
   </footer>
-
   {% include "includes/scripts.html" %}
   {% block extra_js %}{% endblock extra_js %}
-
 </body>
 
 </html>
