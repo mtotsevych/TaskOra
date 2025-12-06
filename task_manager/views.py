@@ -94,7 +94,7 @@ class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
         return context
 
 
-class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
+class WorkerCreateView(generic.CreateView):
     model = Worker
     form_class = WorkerCreationForm
     template_name = "task_manager/register.html"
