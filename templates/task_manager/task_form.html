@@ -1,0 +1,30 @@
+{% extends "layouts/base.html" %}
+{% load crispy_forms_filters %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-transparent pb-0">
+          <h5 class="mb-2 text-dark">{{ object|yesno:"Update,Create"}} Task</h5>
+          <p class="text-muted text-sm">{{ object|yesno:"Edit task details below,Create a new task below"}}</p>
+        </div>
+        <div class="card-body pt-0">
+          <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="d-flex justify-content-between mt-4">
+              <a href="{% url "task_manager:task-list" %}" class="btn btn-outline-secondary btn-sm">
+                Cancel
+              </a>
+              <button type="submit" class="btn btn-primary btn-sm">{{ object|yesno:"Save Changes,Save Task"}}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
