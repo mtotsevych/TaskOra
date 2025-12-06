@@ -59,7 +59,7 @@ class Task(models.Model):
     ]
 
     name = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField()
     deadline = models.DateField(null=True, blank=True)
     is_completed = models.BooleanField(default=False)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
@@ -70,6 +70,9 @@ class Task(models.Model):
     )
     tags = models.ManyToManyField(Tag, related_name="tasks")
     assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="tasks")
+
+    def get_absolute_url(self):
+        return reverse("task_manager:task-detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.name
