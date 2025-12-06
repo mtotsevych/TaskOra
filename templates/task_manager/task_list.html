@@ -1,0 +1,119 @@
+{% extends "layouts/base.html" %}
+{% load crispy_forms_filters %}
+{% load static %}
+
+{% block content %}
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <div class="d-flex justify-content-between align-items-baseline mb-2">
+              <h6 class="mb-0 pt-1">All tasks</h6>
+              <div class="d-flex align-items-baseline">
+                <a href="{% url "task_manager:task-create" %}" class="btn btn-primary me-4 px-4 py-1" style="font-size: 0.875rem; line-height: 1.8;">
+                  Create new task
+                </a>
+                <form action="" method="get" class="position-relative" style="width: 250px;">
+                  {{ form.name }}
+                  <input type="hidden" name="completed" value="{{ request.GET.completed }}">
+                  <button type="submit" class="btn position-absolute end-0 top-0 bottom-0 px-3 border-0 bg-transparent shadow-none">
+                    <i class="fas fa-search text-secondary"></i>
+                  </button>
+                </form>
+                <div class="dropdown ms-4 me-4">
+                <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa fa-ellipsis-v text-secondary"></i>
+                </a>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="taskMenu">
+                    <li><a class="dropdown-item border-radius-md" href="{% url "task_manager:task-list" %}">All Tasks</a></li>
+                    <li>
+                      <form action="" method="get" novalidate>
+                        <input type="hidden" name="name" value="{{ request.GET.name }}">
+                        <input type="hidden" name="completed" value="Yes">
+                        <input type="submit" class="dropdown-item border-radius-md" value="Completed">
+                      </form>
+                    </li>
+                    <li>
+                      <form action="" method="get" novalidate>
+                        <input type="hidden" name="name" value="{{ request.GET.name }}">
+                        <input type="hidden" name="completed" value="No">
+                        <input type="submit" class="dropdown-item border-radius-md" value="Not Completed">
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive px-4" style="max-height: 72vh; overflow-y: auto;">
+              <table class="table align-items-center mb-0">
+                {% if task_list %}
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Deadline</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Priority</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                      <th class="text-secondary opacity-7"></th>
+                      <th class="text-secondary opacity-7"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for task in task_list %}
+                      <tr>
+                        <td class="align-middle ps-4 py-3">
+                          <h6 class="mb-0 text-sm">{{ task.name }}</h6>
+                          <p class="text-xs text-secondary mb-0">@{{ task.task_type }}</p>
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          {% if task.deadline %}
+                            <h6 class="mb-0 text-sm">{{ task.deadline }}</h6>
+                          {% else %}
+                            <h6 class="mb-0 text-sm">No deadline for this task</h6>
+                          {% endif %}
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          <h6 class="mb-0 text-sm">{{ task.priority }}</h6>
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          {% if task.is_completed %}
+                            <h6 class="mb-0 text-sm">Completed</h6>
+                          {% else %}
+                            <h6 class="mb-0 text-sm">Not Completed</h6>
+                          {% endif %}
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          {% if task.is_completed %}
+                            <a href="{% url "task_manager:task-complete-incomplete" task.id %}" class="btn btn-primary btn-sm">
+                              Incomplete
+                            </a>
+                          {% else %}
+                            <a href="{% url "task_manager:task-complete-incomplete" task.id %}" class="btn btn-primary btn-sm">
+                              Complete
+                            </a>
+                          {% endif %}
+                        </td>
+                        <td class="align-middle px-2 py-3 text-center">
+                          <a href="{% url "task_manager:task-detail" task.id %}" class="btn btn-primary btn-sm">
+                            View details
+                          </a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                {% else %}
+                  <div class="card-body px-4 py-3">
+                    <h6 class="mb-0">There are no tasks.</h6>
+                  </div>
+                {% endif %}
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include "includes/footer.html" %}
+  </div>
+{% endblock content %}
