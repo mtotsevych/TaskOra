@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 
-from TaskOra import settings
+from TaskOra.settings import development
 
 
 class Position(models.Model):
@@ -69,7 +69,7 @@ class Task(models.Model):
         related_name="tasks"
     )
     tags = models.ManyToManyField(Tag, related_name="tasks")
-    assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="tasks")
+    assignees = models.ManyToManyField(development.AUTH_USER_MODEL, related_name="tasks")
 
     def get_absolute_url(self):
         return reverse("task_manager:task-detail", kwargs={"pk": self.pk})
